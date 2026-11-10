@@ -54,9 +54,6 @@
     .student-info { min-width: 0; flex: 1; }
     .student-name { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
     .student-name strong { font-size: 18px; line-height: 1.3; font-weight: 800; }
-    .student-badge { display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; color: #22619b; background: #e7f3ff; font-size: 11px; font-weight: 500; }
-    .student-achievement { display: flex; flex-wrap: wrap; gap: 4px 13px; margin-top: 4px; color: var(--muted); font-size: 11px; }
-    .student-achievement b { color: #35648d; font-weight: 650; }
     .section { margin-top: 16px; }
     .report-card { position: relative; margin-top: 31px; padding: 25px 12px 12px; border: 0; border-radius: 18px; background: #cfede4; }
     .section-heading { position: absolute; top: -13px; right: 0; left: 0; z-index: 1; display: flex; align-items: center; justify-content: center; margin: 0; }
@@ -249,8 +246,6 @@
       .metric-value { font-size: 24px; }
       .metric-value small { font-size: 8px; }
       .metric-foot { font-size: 9px; letter-spacing: 0; }
-      .student-badge { font-size: 10px; }
-      .student-achievement { font-size: 10px; gap: 2px 7px; }
       .answer-grid { gap: 15px 5px; }
       .answer-number { width: 44px; height: 44px; }
       .radar-label { min-width: 60px; }
@@ -379,7 +374,6 @@
     .intro h2 { width: 62%; color: #1d3546; font-size: 28px; letter-spacing: 0; }
     .intro-copy p { color: #4a6878; font-size: 11px; letter-spacing: 1px; }
     .student-summary { border: 1px solid #e9f0f2; box-shadow: 0 4px 14px #1e49520d; }
-    .student-badge { border-radius: 6px; color: #126e5d; background: #e5f5ef; }
     .section { margin-top: 24px; }
     .report-card { margin-top: 25px; padding: 0; border: 0; border-radius: 0; background: transparent; }
     .section-heading { position: static; display: flex; justify-content: flex-start; margin: 0 0 11px; padding: 0 4px; }
@@ -487,8 +481,7 @@
         <div class="student-summary">
           <img class="student-avatar" src="./assets/report-student-avatar.webp" width="42" height="42" alt="">
           <div class="student-info">
-            <div class="student-name"><strong>小鹿同学</strong><span class="student-badge">创意探索家</span></div>
-            <div class="student-achievement"><span>听课 <b>42</b> 分钟</span><span>练习正确率 <b>90%</b></span></div>
+            <div class="student-name"><strong>小鹿同学</strong></div>
           </div>
         </div>
         <p class="sr-only">本页为产品方案演示，学习记录、能力分数与作品内容均为示例。</p>
