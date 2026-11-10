@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#eaf2fa">
+  <title>软件课堂报告 · Demo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1c2c41;
+      --muted: #65758a;
+      --line: #eaf0f5;
+      --blue: #0872e4;
+      --blue-deep: #075fc0;
+      --green: #07986f;
+      --orange: #ee9b24;
+      --page: #eaf2fa;
+      --white: #fff;
+      --radius: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: #f3f6fa; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    button, select { font: inherit; }
+    button { touch-action: manipulation; cursor: pointer; }
+    button, select, summary { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, select:focus-visible, summary:focus-visible { outline: 3px solid #0874e8; outline-offset: 4px; }
+    button { transition: background .18s ease, transform .18s ease, box-shadow .18s ease; }
+    button:active { transform: translateY(1px); }
+    [hidden] { display: none !important; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    .icon-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+    .app-shell { position: relative; width: min(100%, 520px); min-height: 100dvh; margin: 0 auto; padding-bottom: 0; overflow: clip; background: var(--page); }
+    .topbar { position: relative; z-index: 10; display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; height: 54px; padding: 0 12px; background: #fff; }
+    .topbar h1 { margin: 0; text-align: center; font-size: 16px; font-weight: 650; }
+    .icon-button { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 12px; color: var(--ink); background: transparent; }
+    .icon-button:hover { background: #f1f6fb; }
+    .icon-button svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    main { padding: 0 16px; }
+    .intro { position: relative; margin: 0 -16px; padding-bottom: 14px; background: linear-gradient(133deg, #dbeaff 0%, #c4ecff 53%, #eaf2fa 91%); }
+    .hero-scene { position: relative; min-height: 238px; overflow: hidden; }
+    .hero-mascot { position: absolute; top: 0; right: 0; width: 56%; height: 238px; object-fit: cover; object-position: center; -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%); mask-image: linear-gradient(90deg, transparent, #000 14%); }
+    .brand-logo { position: absolute; top: 0; left: 0; z-index: 1; width: 134px; height: auto; }
+    .intro-copy { position: relative; z-index: 1; padding: 81px 0 0 25px; pointer-events: none; }
+    .intro h2 { width: 60%; margin: 0; color: #102438; font-size: 28px; line-height: 1.25; font-weight: 900; letter-spacing: 0; }
+    .intro h2 span { display: inline-block; margin-top: 3px; }
+    .intro-copy p { margin: 12px 0 0 3px; color: #3c5975; font-size: 12px; font-weight: 500; letter-spacing: 3px; }
+    .student-summary { position: relative; z-index: 2; display: flex; align-items: center; gap: 11px; margin: -10px 16px 0; padding: 13px 16px; border-radius: 12px; background: #fff; }
+    .student-avatar { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; background: #edf6ff; }
+    .student-info { min-width: 0; flex: 1; }
+    .student-name { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .student-name strong { font-size: 18px; line-height: 1.3; font-weight: 800; }
+    .student-badge { display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; color: #22619b; background: #e7f3ff; font-size: 11px; font-weight: 500; }
+    .student-achievement { display: flex; flex-wrap: wrap; gap: 4px 13px; margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .student-achievement b { color: #35648d; font-weight: 650; }
+    .section { margin-top: 16px; }
+    .report-card { position: relative; margin-top: 31px; padding: 25px 12px 12px; border: 0; border-radius: 18px; background: #cfede4; }
+    .section-heading { position: absolute; top: -13px; right: 0; left: 0; z-index: 1; display: flex; align-items: center; justify-content: center; margin: 0; }
+    .section-heading::before { content: ""; position: absolute; z-index: -1; width: min(230px, calc(100% - 54px)); height: 22px; border-radius: 999px; background: #ffbd56; }
+    .section-heading h2 { display: flex; align-items: center; justify-content: center; min-height: 40px; margin: 0; padding: 4px 25px; border-radius: 999px; color: #fff; background: #09835f; font-size: 17px; font-weight: 750; line-height: 1.4; white-space: nowrap; }
+    .panel { padding: 23px 18px 14px; border: 0; border-radius: 14px; background: #fff; }
+    .section-context { margin: 0 0 10px; color: #6b7c8c; font-size: 11px; text-align: right; }
+    .metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .metric { min-width: 0; padding: 13px 3px 12px; border-radius: 11px; background: #f4f6f9; text-align: center; }
+    .metric-label { color: #253448; font-size: 12px; font-weight: 500; white-space: nowrap; }
+    .metric-value { display: flex; align-items: baseline; justify-content: center; gap: 3px; margin-top: 6px; color: var(--blue); font-size: 32px; line-height: 1.2; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .metric-value small { color: #4f6074; font-size: 10px; font-weight: 500; }
+    .metric-foot { margin-top: 6px; color: #69768a; font-size: 10px; white-space: nowrap; }
+    .timeline-summary { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .timeline-summary strong { color: #34516c; font-size: 13px; font-weight: 650; }
+    .timeline-summary span { color: var(--muted); font-size: 11px; }
+    .timeline-track { display: flex; gap: 3px; height: 12px; margin: 16px 0 11px; overflow: hidden; border-radius: 999px; background: #eaf0f4; }
+    .timeline-track span { display: block; height: 100%; }
+    .timeline-track .focus { width: 44%; background: #458cf0; }
+    .timeline-track .listen { width: 31%; background: #74d6d0; }
+    .timeline-track .interact { width: 16%; background: #ffbe63; }
+    .timeline-track .pause { width: 9%; background: #d9e3f0; }
+    .legend { display: flex; flex-wrap: wrap; gap: 7px 13px; color: var(--muted); font-size: 10px; }
+    .legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .legend i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--dot); }
+    .time-labels { display: flex; justify-content: space-between; margin-top: 12px; color: var(--muted); font-size: 10px; }
+    .segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 18px; padding: 4px; border-radius: 11px; background: #f1f5f9; }
+    .segmented button { min-height: 44px; padding: 0 10px; border: 0; border-radius: 8px; color: #586b82; background: transparent; font-size: 13px; font-weight: 600; }
+    .segmented button[aria-selected="true"] { color: #086ad4; background: #fff; box-shadow: 0 2px 6px #233d5910; }
+    .work-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 13px; }
+    .work-top h3 { margin: 0; font-size: 15px; font-weight: 750; }
+    .work-top p { margin: 3px 0 0; color: var(--muted); font-size: 11px; }
+    .project-art { position: relative; overflow: hidden; border-radius: 12px; background: #142a45; }
+    .project-art svg { display: block; width: 100%; height: auto; }
+    .art-label { position: absolute; top: 10px; left: 10px; padding: 3px 7px; border: 1px solid #ffffff30; border-radius: 5px; color: #e9f3ff; background: #10263bd9; font-size: 10px; }
+    .work-caption { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 11px; color: var(--muted); font-size: 11px; }
+    .text-button { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; gap: 4px; min-height: 44px; padding: 0 12px; border: 1px solid #d7e9fc; border-radius: 9px; color: #0869ce; background: #f3f8ff; font-size: 12px; font-weight: 600; }
+    .text-button:hover { background: #e6f1ff; }
+    .text-button svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .code-select-label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
+    .code-select { width: 100%; min-height: 44px; padding: 0 11px; border: 1px solid #dce8ee; border-radius: 9px; color: var(--ink); background: #fff; cursor: pointer; font-size: 14px; }
+    .code-window { margin-top: 12px; overflow: hidden; border-radius: 11px; color: #dce8f4; background: #15263b; }
+    .code-window-head { display: flex; align-items: center; gap: 5px; min-height: 34px; padding: 0 11px; border-bottom: 1px solid #ffffff1a; color: #b1c4d7; font-size: 10px; }
+    .code-window-head i { width: 7px; height: 7px; border-radius: 50%; background: #ff8d81; }
+    .code-window-head i:nth-child(2) { background: #ffcb5b; }
+    .code-window-head i:nth-child(3) { background: #48c891; margin-right: 4px; }
+    .code-lines { padding: 10px 0 12px; overflow-x: auto; font: 12px/1.85 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .code-line { display: grid; grid-template-columns: 34px max-content; min-width: max-content; padding-right: 14px; }
+    .line-number { padding-right: 11px; color: #8da4bb; text-align: right; user-select: none; }
+    .line-content { color: #dce8f4; white-space: pre; }
+    .code-footnote { margin: 10px 0 0; color: var(--muted); font-size: 11px; }
+    .word-cloud { display: flex; align-content: center; align-items: center; justify-content: center; flex-wrap: wrap; gap: 11px 12px; min-height: 223px; padding: 14px 3px; }
+    .word { display: inline-block; padding: 5px 13px; border-radius: 999px; color: var(--tone, #2c6faf); background: var(--tint, #edf5ff); font-size: var(--size, 15px); font-weight: 650; line-height: 1.2; white-space: nowrap; }
+    .word.small { padding: 0 3px; background: transparent; font-size: 12px; }
+    .word.main-word { padding: 8px 22px; color: #fff; background: #5092dc; font-size: 28px; font-weight: 800; }
+    .knowledge-note { margin: 5px 0 0; color: var(--muted); font-size: 11px; text-align: center; }
+    .ability-model { position: relative; margin: 12px 0 0; aspect-ratio: 430 / 342; }
+    .ability-model > svg { display: block; width: 100%; height: 100%; }
+    .radar-grid { fill: none; stroke: #c8e0ff; stroke-width: 1; stroke-dasharray: 4 5; }
+    .radar-outer { fill: #fbfdff; stroke: #a9ceff; stroke-width: 1.8; }
+    .radar-axis { stroke: #d4e7ff; stroke-width: 1; }
+    .radar-area { fill: #8dbbff; fill-opacity: .3; stroke: #6ca4f6; stroke-width: 1.5; }
+    .radar-point { fill: #418bef; stroke: #fff; stroke-width: 2; }
+    .radar-labels { margin: 0; padding: 0; list-style: none; }
+    .radar-label { position: absolute; min-width: 70px; text-align: center; line-height: 1.35; }
+    .radar-label > span { display: block; color: #20334c; font-size: 13px; font-weight: 750; }
+    .radar-label small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .radar-label b { margin-left: 4px; color: var(--blue); font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .radar-label.interaction { top: 1%; left: 50%; transform: translateX(-50%); }
+    .radar-label.hands-on { top: 33%; right: -3px; }
+    .radar-label.knowledge { bottom: 0; left: 73%; transform: translateX(-50%); }
+    .radar-label.logic { bottom: 0; left: 27%; transform: translateX(-50%); }
+    .radar-label.ai { top: 33%; left: -3px; }
+    .practice-card > .panel { padding: 23px 18px 10px; }
+    .practice-counts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+    .practice-count { padding: 10px 4px; border-radius: 10px; color: #31574e; background: #edfaf6; text-align: center; font-size: 11px; }
+    .practice-count div { display: flex; justify-content: center; align-items: baseline; gap: 3px; line-height: 1.35; }
+    .practice-count b { color: #bc6811; font-size: 27px; font-weight: 850; font-variant-numeric: tabular-nums; }
+    .practice-count > span { display: block; margin-top: 2px; font-weight: 550; }
+    .answer-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); justify-items: center; gap: 16px 10px; margin: 23px 0 21px; }
+    .answer-number { position: relative; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%; color: #fff; background: #0a9f76; font-size: 21px; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .answer-number:hover { box-shadow: 0 0 0 5px #0a9f761a; transform: translateY(-2px); }
+    .answer-number.wrong { color: #613000; background: #ffad36; }
+    .answer-number.wrong:hover { box-shadow: 0 0 0 5px #ffad3625; }
+    .answer-number .answer-indicator { position: absolute; right: -2px; bottom: -1px; display: grid; place-items: center; width: 14px; height: 14px; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #087958; font-size: 9px; line-height: 1; }
+    .answer-number.wrong .answer-indicator { color: #613000; background: #ffcc7b; }
+    .answer-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px; margin-bottom: 5px; color: #66796f; font-size: 11px; }
+    .answer-legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .answer-legend i { width: 7px; height: 7px; border-radius: 50%; background: #0a9f76; }
+    .answer-legend .wrong-dot { background: #ffad36; }
+    .answer-legend .empty-dot { background: #c5cbd1; }
+    .view-answers { display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; min-height: 44px; padding: 6px; border: 0; border-radius: 8px; color: #06815d; background: transparent; font-size: 13px; font-weight: 700; }
+    .view-answers:hover { background: #effaf6; }
+    .view-answers svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .inspiration-art { overflow: hidden; border-radius: 12px; background: #132947; }
+    .inspiration-art svg { display: block; width: 100%; height: auto; }
+    footer { padding: 31px 0 30px; text-align: center; }
+    .footer-slogan { position: relative; display: inline-block; margin: 0; padding-bottom: 15px; color: #244d61; font-size: 23px; font-weight: 850; letter-spacing: 1px; }
+    .footer-slogan::after { content: ""; position: absolute; bottom: 0; left: 50%; width: 63px; height: 5px; border-radius: 2px; background: #ff927d; transform: translateX(-50%) rotate(-7deg); }
+    .action-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 46px; padding: 6px 10px; border: 1px solid #d7e3f0; border-radius: 10px; color: #385d7e; background: #fff; font-size: 14px; font-weight: 650; }
+    .action-button:hover { background: #f1f7fe; }
+    .action-button svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .action-button.primary { border-color: var(--blue); color: #fff; background: var(--blue); }
+    .action-button.primary:hover { background: var(--blue-deep); }
+    .toast { position: fixed; z-index: 60; right: 16px; bottom: calc(24px + env(safe-area-inset-bottom)); left: 16px; width: fit-content; max-width: calc(100% - 32px); margin: 0 auto; padding: 10px 15px; border-radius: 10px; color: #fff; background: #20354bf2; font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s ease, transform .2s ease; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    dialog { width: min(calc(100% - 28px), 460px); max-height: calc(100dvh - 48px); padding: 0; overflow: auto; border: 0; border-radius: 16px; color: var(--ink); background: #fff; box-shadow: 0 24px 80px #0c1f4933; }
+    dialog::backdrop { background: #10233480; }
+    .dialog-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 13px 10px 20px; border-bottom: 1px solid var(--line); background: #fff; }
+    .dialog-head h2 { margin: 0; font-size: 16px; font-weight: 750; }
+    .preview-dialog-body { padding: 16px; }
+    .preview-copy { margin: 12px 2px 1px; color: var(--muted); font-size: 13px; }
+    .question-dialog:not([open]) { display: none; }
+    .question-dialog[open] { display: flex; flex-direction: column; width: min(calc(100vw - 32px), 600px); height: min(calc(100dvh - 32px), 1000px); max-height: none; overflow: hidden; border: 1px solid #d3dce4; border-radius: 0; box-shadow: 0 16px 54px #24395026; }
+    .question-dialog::backdrop { background: #eaf0f6; }
+    .question-topbar { display: grid; flex: 0 0 52px; grid-template-columns: 44px 1fr 44px; align-items: center; padding: 0 8px; border-bottom: 1px solid #edf1f4; background: #fff; }
+    .question-topbar h2 { margin: 0; text-align: center; font-size: 16px; font-weight: 700; }
+    .question-filter { display: grid; flex: 0 0 auto; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid #edf1f4; }
+    .question-filter button { min-height: 56px; padding: 0 5px; border: 0; border-bottom: 3px solid transparent; color: #999fa5; background: #fff; font-size: 15px; font-weight: 550; }
+    .question-filter button[aria-selected="true"] { border-bottom-color: #2bc79f; color: #20bd94; font-weight: 700; }
+    .question-filter b { margin-left: 3px; font-variant-numeric: tabular-nums; }
+    .question-main { min-height: 0; flex: 1; padding: 22px 24px 24px; overflow: auto; background: #fff; }
+    .question-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #7d858c; font-size: 12px; }
+    .question-type { padding: 3px 9px; border-radius: 4px; color: #81888e; background: #f0f2f3; }
+    .question-progress { font-variant-numeric: tabular-nums; }
+    .exercise-card { margin-top: 48px; padding: 20px; border-radius: 10px; color: #20334c; background: #f7faf9; }
+    .exercise-eyebrow { margin-bottom: 10px; color: #168569; font-size: 12px; font-weight: 700; }
+    .question-stem { margin: 0; color: #20334c; font-size: 19px; font-weight: 750; line-height: 1.55; }
+    .q-options { display: grid; gap: 9px; margin-top: 18px; }
+    .q-option { padding: 10px 12px; border: 1px solid #e1e9e5; border-radius: 8px; color: #4c6070; background: #fff; font-size: 14px; line-height: 1.55; }
+    .q-option.correct { border-color: #8bd2b8; color: #0b7554; background: #eefaf5; }
+    .q-option.incorrect { border-color: #f4c386; color: #97500e; background: #fff6e9; }
+    .q-option-tag { display: inline-block; margin-left: 7px; font-size: 11px; font-weight: 700; }
+    .answer-section { margin-top: 76px; }
+    .answer-heading { display: flex; align-items: center; gap: 10px; margin: 0 0 20px; color: #202426; font-size: 19px; font-weight: 800; }
+    .answer-heading::after { content: ""; flex: 1; border-top: 2px dashed #d5dadd; }
+    .answer-result { color: #596268; font-size: 15px; line-height: 1.75; }
+    .explanation { margin-top: 22px; padding: 14px 16px; border-radius: 9px; color: #526b7e; background: #f4f8f6; font-size: 14px; line-height: 1.8; }
+    .explanation strong { display: block; margin-bottom: 4px; color: #168569; font-size: 13px; }
+    .question-nav { display: grid; flex: 0 0 auto; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 20px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid #f1f3f5; background: #fff; }
+    .question-nav .action-button { min-height: 50px; border-radius: 999px; color: #25b892; border-color: #b5ecdc; font-size: 15px; }
+    .question-nav .action-button.primary { border-color: #29c6a4; color: #fff; background: #29c6a4; }
+    .question-nav .action-button:disabled { color: #b2dccc; border-color: #d4eee6; background: #fff; cursor: default; }
+    @media (min-width: 700px) {
+      body { padding: 24px 0; }
+      .app-shell { min-height: calc(100dvh - 48px); border: 1px solid #dce6f0; border-radius: 20px; box-shadow: 0 15px 55px #264b7710; }
+      .question-dialog[open] { height: min(calc(100dvh - 48px), 1000px); }
+    }
+    @media (max-width: 400px) {
+      main { padding-right: 12px; padding-left: 12px; }
+      .intro { margin-right: -12px; margin-left: -12px; }
+      .hero-scene { min-height: 212px; }
+      .hero-mascot { height: 212px; }
+      .intro-copy { padding-top: 75px; padding-left: 20px; }
+      .intro h2 { font-size: 25px; }
+      .intro-copy p { margin-top: 10px; font-size: 11px; letter-spacing: 2px; }
+      .student-summary { gap: 9px; margin-right: 12px; margin-left: 12px; padding: 12px 13px; }
+      .student-avatar { width: 36px; height: 36px; }
+      .student-name strong { font-size: 17px; }
+      .report-card { padding: 24px 10px 10px; }
+      .panel { padding: 21px 13px 12px; }
+      .section-heading h2 { min-height: 38px; padding-right: 21px; padding-left: 21px; font-size: 16px; }
+      .metric-grid { gap: 6px; }
+      .metric { padding-top: 12px; padding-bottom: 12px; }
+      .metric-label { font-size: 11px; }
+      .metric-value { font-size: 27px; gap: 2px; }
+      .metric-value small { font-size: 9px; }
+      .metric-foot { font-size: 10px; }
+      .word-cloud { gap: 10px 8px; min-height: 205px; }
+      .word { padding-right: 11px; padding-left: 11px; }
+      .word.main-word { font-size: 25px; padding: 7px 17px; }
+      .word.small { font-size: 11px; }
+      .radar-label > span { font-size: 12px; }
+      .radar-label b { font-size: 15px; }
+      .practice-card > .panel { padding: 21px 13px 8px; }
+      .answer-grid { gap: 15px 8px; }
+      .answer-number { width: 44px; height: 44px; font-size: 20px; }
+      .practice-counts { gap: 7px; }
+      .practice-count b { font-size: 25px; }
+      .practice-count { font-size: 10px; }
+      .footer-slogan { font-size: 22px; }
+      .question-main { padding: 20px 18px 22px; }
+      .exercise-card { margin-top: 36px; padding: 16px; }
+      .answer-section { margin-top: 58px; }
+      .question-nav { gap: 10px; padding-right: 13px; padding-left: 13px; }
+    }
+    @media (max-width: 340px) {
+      .intro h2 { font-size: 22px; }
+      .metric-grid { gap: 4px; }
+      .metric-value { font-size: 24px; }
+      .metric-value small { font-size: 8px; }
+      .metric-foot { font-size: 9px; letter-spacing: 0; }
+      .student-badge { font-size: 10px; }
+      .student-achievement { font-size: 10px; gap: 2px 7px; }
+      .answer-grid { gap: 15px 5px; }
+      .answer-number { width: 44px; height: 44px; }
+      .radar-label { min-width: 60px; }
+      .radar-label > span { font-size: 11px; }
+      .radar-label b { font-size: 14px; }
+      .radar-label small { font-size: 9px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+    .report-link { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 7px; border-radius: 8px; color: #286db0; font-size: 12px; font-weight: 650; text-decoration: none; white-space: nowrap; }
+    .report-link:hover { background: #f1f7fa; }
+    .topbar { grid-template-columns: 44px minmax(0, 1fr) auto; gap: 4px; padding-right: 8px; }
+    .game-panel { padding-bottom: 14px; }
+    .game-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .game-topline h3 { margin: 0; color: #223b50; font-size: 16px; font-weight: 750; }
+    .game-topline p { margin: 3px 0 0; color: #718292; font-size: 11px; }
+    .game-live-label { display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto; padding: 4px 8px; border-radius: 999px; color: #08735a; background: #e8f7ef; font-size: 10px; font-weight: 650; }
+    .game-live-label i { width: 6px; height: 6px; border-radius: 50%; background: #0caa72; }
+    .game-board { overflow: hidden; border: 1px solid #dfe9e8; border-radius: 12px; background: #eff7ed; outline-offset: 4px; }
+    .game-cover { position: relative; display: flex; min-height: 310px; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; padding: 26px 20px 22px; background: linear-gradient(180deg, #d8f0eb 0%, #eff5dc 59%, #9fd087 59%, #79b96e 100%); isolation: isolate; }
+    .game-cover::before, .game-cover::after { position: absolute; right: -20px; bottom: 33px; left: -20px; height: 48px; content: ""; background: repeating-linear-gradient(90deg, #ffffff40 0 2px, transparent 2px 34px); transform: rotate(-3deg); }
+    .game-cover::after { bottom: 12px; height: 16px; background: #5e9e5b; transform: none; }
+    .cover-sun { position: absolute; top: 28px; right: 34px; width: 44px; height: 44px; border-radius: 50%; background: #ffc554; box-shadow: 0 0 0 9px #ffc5542b; }
+    .cover-cloud { position: absolute; width: 58px; height: 17px; border-radius: 999px; background: #fff; opacity: .83; }
+    .cover-cloud::before, .cover-cloud::after { position: absolute; bottom: 2px; width: 25px; height: 25px; border-radius: 50%; content: ""; background: inherit; }
+    .cover-cloud::before { left: 8px; }
+    .cover-cloud::after { right: 7px; width: 19px; height: 19px; }
+    .cover-cloud-one { top: 59px; left: 28px; }
+    .cover-cloud-two { top: 95px; right: 70px; transform: scale(.68); }
+    .cover-title { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .cover-title > span { padding: 3px 10px; border: 1px solid #3d75556b; border-radius: 999px; color: #376b52; background: #ffffffa8; font-size: 10px; font-weight: 700; }
+    .cover-title strong { margin-top: 7px; color: #25553d; font-size: 29px; font-weight: 850; line-height: 1.25; }
+    .cover-title small { margin-top: 4px; color: #487058; font-size: 11px; }
+    .cover-horse { position: relative; z-index: 1; width: 102px; height: 78px; margin-top: 1px; color: #7d4931; filter: drop-shadow(0 5px 0 #45734738); }
+    .game-play-button { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 7px; min-height: 46px; margin-top: 1px; padding: 0 22px; border: 2px solid #fff; border-radius: 999px; color: #fff; background: #168464; box-shadow: 0 4px 0 #0c644b; font-size: 14px; font-weight: 750; }
+    .game-play-button:hover { background: #0e7558; }
+    .game-play-button svg { width: 17px; height: 17px; fill: currentColor; stroke: currentColor; stroke-width: 1.5; }
+    .game-play { min-height: 310px; padding: 13px 12px 14px; background: linear-gradient(180deg, #e7f5ed, #f9f8e9); }
+    .game-scorebar { display: flex; align-items: center; justify-content: space-between; padding: 0 3px 10px; }
+    .round-count { color: #60786b; font-size: 11px; font-weight: 650; }
+    .game-score { display: inline-flex; align-items: center; gap: 8px; min-height: 28px; padding: 0 11px; border-radius: 999px; color: #fff; background: #326c57; font-size: 12px; font-variant-numeric: tabular-nums; }
+    .game-score b { min-width: 10px; text-align: center; }
+    .game-score i { color: #c7e2d2; font-style: normal; }
+    .race-pair { display: grid; gap: 8px; }
+    .race-side { padding: 8px 9px 7px; border: 1px solid #d6e8db; border-radius: 9px; background: #fff; }
+    .race-side.rival { background: #fffaf0; border-color: #eedfbd; }
+    .race-name { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #375c49; font-size: 10px; }
+    .race-name strong { color: #225840; font-size: 11px; font-weight: 750; }
+    .rival .race-name strong { color: #835e2f; }
+    .race-rail { position: relative; height: 36px; margin-top: 4px; overflow: hidden; border-radius: 6px; background: repeating-linear-gradient(180deg, #e7eee6 0 1px, #f5f8f2 1px 17px); }
+    .rival .race-rail { background: repeating-linear-gradient(180deg, #eee8dc 0 1px, #faf6ee 1px 17px); }
+    .race-rail::before { position: absolute; top: 0; bottom: 0; right: 10%; width: 8px; border-right: 2px solid #b36d45; border-left: 2px solid #b36d45; content: ""; opacity: .68; }
+    .track-mark, .finish-mark { position: absolute; z-index: 1; top: 1px; color: #8d9b8d; font-size: 8px; line-height: 1; }
+    .track-mark { left: 3px; }
+    .finish-mark { right: 0; }
+    .runner { position: absolute; z-index: 2; top: 4px; left: 20px; display: block; width: 43px; height: 29px; color: #85553b; transform: translateX(0); }
+    .rival .runner { color: #a4783e; }
+    .runner svg { display: block; width: 100%; height: 100%; overflow: visible; }
+    .race-pair.is-racing .runner { transition: transform .9s cubic-bezier(.16,.76,.28,1); }
+    .race-pair.is-racing .runner svg { animation: horse-bob .22s ease-in-out infinite alternate; }
+    @keyframes horse-bob { to { transform: translateY(-2px) rotate(-2deg); } }
+    .race-pair.player-wins .race-side:first-child { border-color: #5bb887; box-shadow: inset 0 0 0 1px #5bb887; }
+    .race-pair.opponent-wins .race-side:last-child { border-color: #e0ae58; box-shadow: inset 0 0 0 1px #e0ae58; }
+    .race-message { min-height: 34px; margin: 8px 2px 7px; color: #42614e; font-size: 11px; font-weight: 650; line-height: 1.5; text-align: center; }
+    .horse-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+    .horse-choice { min-width: 0; min-height: 47px; padding: 5px 3px; border: 1px solid #d7e4da; border-radius: 8px; color: #456650; background: #fff; font-size: 10px; font-weight: 650; line-height: 1.35; }
+    .horse-choice span { display: block; color: #758a79; font-size: 9px; font-weight: 500; }
+    .horse-choice[aria-pressed="true"] { border-color: #138866; color: #0c6c4e; background: #e9f7ef; box-shadow: 0 0 0 2px #13886624; }
+    .horse-choice:disabled { color: #9da99f; background: #f3f5f2; cursor: default; opacity: .55; }
+    .game-action { display: block; width: 100%; min-height: 43px; margin-top: 9px; border: 0; border-radius: 8px; color: #fff; background: #168464; font-size: 13px; font-weight: 750; }
+    .game-action:hover { background: #0e7558; }
+    .game-action:disabled { background: #9aafa2; cursor: wait; }
+    .game-controls { display: flex; justify-content: flex-start; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .game-controls .text-button { min-height: 42px; }
+    .game-controls .text-button svg { width: 15px; height: 15px; }
+    .keyboard-chevron { margin-left: -2px; color: #84929c; font-size: 14px; line-height: 1; }
+    .virtual-keyboard { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 10px; padding: 12px 14px; border: 1px solid #e3ece6; border-radius: 10px; background: #f6faf7; }
+    .direction-pad { display: grid; grid-template-columns: repeat(3, 46px); grid-template-rows: repeat(3, 46px); gap: 4px; justify-content: center; }
+    .direction-pad button { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid #d3e3d7; border-radius: 8px; color: #28684d; background: #fff; box-shadow: 0 2px 0 #d5e3d8; font-size: 20px; font-weight: 750; }
+    .direction-pad button:hover { background: #e7f5eb; }
+    .key-center { display: grid; place-items: center; color: #91a194; font-size: 9px; }
+    .space-key { display: flex; min-width: 116px; min-height: 58px; flex-direction: column; align-items: center; justify-content: center; padding: 5px 10px; border: 1px solid #edcf8e; border-bottom-width: 3px; border-radius: 9px; color: #785c24; background: #fff5d8; }
+    .space-key span { font-size: 13px; font-weight: 750; }
+    .space-key small { color: #9c7c3c; font-size: 9px; }
+    .game-caption { margin: 9px 2px 0; color: #718292; font-size: 10px; line-height: 1.5; }
+    @media (max-width: 400px) {
+      .topbar { grid-template-columns: 40px minmax(0, 1fr) auto; gap: 1px; padding-right: 6px; }
+      .topbar .icon-button { width: 40px; }
+      .topbar h1 { font-size: 14px; }
+      .report-link { padding: 0 5px; font-size: 11px; }
+      .game-cover, .game-play { min-height: 300px; }
+      .virtual-keyboard { gap: 9px; padding: 10px 8px; }
+      .direction-pad { grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(3, 44px); gap: 3px; }
+      .direction-pad button { width: 44px; height: 44px; }
+      .space-key { min-width: 96px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .race-pair.is-racing .runner { transition-duration: .01ms; }
+      .race-pair.is-racing .runner svg { animation: none; }
+    }
+    @media print {
+      body { padding: 0; background: #fff; }
+      .app-shell { width: 100%; max-width: 520px; padding-bottom: 0; border: 0; box-shadow: none; }
+      .toast { display: none !important; }
+      .report-card { break-inside: avoid; }
+      * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+    :root {
+      --ink: #20374a;
+      --muted: #64798b;
+      --line: #e5edf1;
+      --blue: #2e77cc;
+      --blue-deep: #205fa9;
+      --green: #13876b;
+      --orange: #dc8a29;
+      --page: #f2f6f8;
+      --radius: 12px;
+    }
+    body { background: #f2f6f8; }
+    .app-shell { background: #f2f6f8; }
+    .topbar { border-bottom: 1px solid #e9eff2; }
+    .intro { padding-bottom: 12px; background: #dff2f1; }
+    .hero-scene { min-height: 238px; }
+    .hero-mascot { width: 56%; object-fit: cover; object-position: center; mask-image: linear-gradient(90deg, transparent, #000 15%); }
+    .intro h2 { width: 62%; color: #1d3546; font-size: 28px; letter-spacing: 0; }
+    .intro-copy p { color: #4a6878; font-size: 11px; letter-spacing: 1px; }
+    .student-summary { border: 1px solid #e9f0f2; box-shadow: 0 4px 14px #1e49520d; }
+    .student-badge { border-radius: 6px; color: #126e5d; background: #e5f5ef; }
+    .section { margin-top: 24px; }
+    .report-card { margin-top: 25px; padding: 0; border: 0; border-radius: 0; background: transparent; }
+    .section-heading { position: static; display: flex; justify-content: flex-start; margin: 0 0 11px; padding: 0 4px; }
+    .section-heading::before { display: none; }
+    .section-heading h2 { min-height: 24px; padding: 0; border-radius: 0; color: #213b4f; background: transparent; font-size: 16px; font-weight: 750; white-space: normal; }
+    .section-heading h2::before { content: ""; width: 4px; height: 17px; flex: 0 0 4px; margin-right: 9px; border-radius: 4px; background: #16896f; }
+    .panel { padding: 16px; border: 1px solid #e5edf1; border-radius: 13px; background: #fff; box-shadow: 0 3px 12px #253f4b08; }
+    .section-context { margin-bottom: 9px; color: #64798b; }
+    .metric-grid { gap: 0; }
+    .metric { padding: 8px 2px; border-radius: 0; background: transparent; }
+    .metric + .metric { border-left: 1px solid #e7edf0; }
+    .metric-label { color: #435a6d; font-size: 11px; }
+    .metric-value { margin-top: 2px; color: #276ec2; font-size: 28px; }
+    .metric-value small { color: #637789; }
+    .metric-foot { margin-top: 3px; color: #718292; font-size: 9px; }
+    .timeline-summary strong { color: #2b485d; }
+    .timeline-track { margin-top: 13px; }
+    .segmented { background: #f2f5f7; }
+    .segmented button[aria-selected="true"] { color: #176fbd; box-shadow: 0 1px 4px #203d5514; }
+    .work-top { align-items: center; margin-bottom: 12px; }
+    .work-top h3 { color: #223b50; }
+    .project-art, .inspiration-art { border-radius: 10px; background: #17324a; }
+    .project-art .project-code-image { display: block; width: 100%; height: auto; aspect-ratio: auto; object-fit: contain; }
+    .work-caption { align-items: center; padding-top: 9px; }
+    .text-button { border-color: #dce8ed; border-radius: 8px; color: #286db0; background: #f7fafb; }
+    .word-cloud { gap: 9px 8px; min-height: 0; padding: 12px 2px 8px; }
+    .word { border-radius: 7px; font-weight: 600; }
+    .word.small { padding: 2px 3px; }
+    .word.main-word { border-radius: 9px; background: #327bd0; font-size: 22px; }
+    .knowledge-note { margin-top: 12px; }
+    .ability-model { margin-top: 4px; }
+    .radar-outer { fill: #fbfdfe; stroke: #b9cbd4; }
+    .radar-grid { stroke: #dce7eb; }
+    .radar-axis { stroke: #dae5e9; }
+    .radar-area { fill: #72bca5; fill-opacity: .28; stroke: #218b70; }
+    .radar-point { fill: #16866c; }
+    .radar-label b { color: #286fbd; }
+    .practice-card > .panel { padding-top: 16px; }
+    .practice-count { border-radius: 8px; color: #425c6e; background: #f2f7f5; }
+    .practice-count b { color: #cb7c26; }
+    .answer-number { background: #17876c; }
+    .answer-number.wrong { color: #653b0e; background: #f0ad4d; }
+    .view-answers { color: #167b64; }
+    .inspiration-video { display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: 10px; background: #172a3b; object-fit: cover; }
+    .video-caption { margin: 10px 0 0; color: #617587; font-size: 12px; }
+    footer { padding: 27px 0 25px; }
+    .footer-slogan { padding: 0; color: #27485b; font-size: 21px; font-weight: 800; letter-spacing: 0; }
+    .footer-slogan::after { display: none; }
+    dialog { border-radius: 12px; }
+    .dialog-head { border-color: #edf1f3; }
+    .preview-dialog-body { padding: 14px; }
+    .preview-code-image { display: block; width: 100%; border-radius: 9px; }
+    @media (max-width: 400px) {
+      .report-card { margin-top: 22px; padding: 0; }
+      .section-heading { padding: 0 3px; }
+      .panel { padding: 14px 12px; }
+      .metric-grid { gap: 0; }
+      .metric { padding: 8px 1px; }
+      .metric-value { font-size: 25px; }
+      .metric-label { font-size: 10px; }
+      .metric-foot { font-size: 8px; }
+      .practice-card > .panel { padding-top: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <svg class="icon-defs" aria-hidden="true" focusable="false">
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22z"/><path d="M4 5.5v14A2.5 2.5 0 0 1 6.5 17H20"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-7.5A7.5 7.5 0 1 1 20 11.5Z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></symbol>
+    <symbol id="i-focus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v2M22 12h-2M12 22v-2M2 12h2"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 16 .8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16Z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m9 6 10 6-10 6z"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9A7.5 7.5 0 0 1 18 6.8L20 12M4 12l2 5.2A7.5 7.5 0 0 0 18.4 15"/></symbol>
+    <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h.01M10 9h.01M13 9h.01M16 9h.01M7 12h.01M10 12h.01M13 12h.01M16 12h.01M8 15h8"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></symbol>
+    <symbol id="i-poster" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h5M8 16h8"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  </svg>
+
+  <div class="app-shell device" id="report" data-export-name="软件课堂报告">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="返回" title="返回" data-toast="这是报告演示页">
+        <svg><use href="#i-back"/></svg>
+      </button>
+      <h1>软件报告</h1>
+      <a class="report-link" href="./硬件报告Demo.html">硬件报告&nbsp;›</a>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="report-title">
+        <div class="hero-scene">
+          <img class="hero-mascot" src="./assets/report-hero-deer.webp" width="510" height="456" alt="小鹿陪你一起探索编程的世界">
+          <img class="brand-logo" src="./assets/report-brand.webp" width="252" height="69" alt="小鹿AI编程">
+          <div class="intro-copy">
+            <h2 id="report-title">【创意编程】<br><span>我的小小宇宙</span></h2>
+            <p>第 二 课 · 学 习 报 告</p>
+          </div>
+        </div>
+        <div class="student-summary">
+          <img class="student-avatar" src="./assets/report-student-avatar.webp" width="42" height="42" alt="">
+          <div class="student-info">
+            <div class="student-name"><strong>小鹿同学</strong><span class="student-badge">创意探索家</span></div>
+            <div class="student-achievement"><span>听课 <b>42</b> 分钟</span><span>练习正确率 <b>90%</b></span></div>
+          </div>
+        </div>
+        <p class="sr-only">本页为产品方案演示，学习记录、能力分数与作品内容均为示例。</p>
+      </section>
+
+      <section class="section report-card data-section" aria-labelledby="data-title">
+        <div class="section-heading">
+          <h2 id="data-title">课堂数据</h2>
+        </div>
+        <div class="panel">
+          <div class="section-context">本节表现</div>
+          <div class="metric-grid">
+            <article class="metric">
+              <div class="metric-label">听课时长</div>
+              <div class="metric-value">42<small>分钟</small></div>
+              <div class="metric-foot">课程共45分钟</div>
+            </article>
+            <article class="metric">
+              <div class="metric-label">代码编辑</div>
+              <div class="metric-value">18<small>行</small></div>
+              <div class="metric-foot">主动尝试调整</div>
+            </article>
+            <article class="metric">
+              <div class="metric-label">课堂互动</div>
+              <div class="metric-value">12<small>次</small></div>
+              <div class="metric-foot">回答与操作</div>
+            </article>
+            <article class="metric">
+              <div class="metric-label">专注时长</div>
+              <div class="metric-value">38<small>分钟</small></div>
+              <div class="metric-foot">专注占比90%</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section report-card" aria-labelledby="engagement-title">
+        <div class="section-heading">
+          <h2 id="engagement-title">课堂表现</h2>
+        </div>
+        <div class="panel">
+          <div class="timeline-summary">
+            <strong>保持专注，持续参与</strong>
+            <span>有效听课 42 分钟</span>
+          </div>
+          <div class="timeline-track" role="img" aria-label="课堂时间分布：听课、专注、互动与短暂休息">
+            <span class="focus"></span><span class="listen"></span><span class="interact"></span><span class="pause"></span>
+          </div>
+          <div class="legend">
+            <span><i style="--dot:#2b89f1"></i>专注学习</span>
+            <span><i style="--dot:#6ecfd4"></i>听课记录</span>
+            <span><i style="--dot:#ffbd50"></i>课堂互动</span>
+            <span><i style="--dot:#d9e3f0"></i>短暂休息</span>
+          </div>
+          <div class="time-labels"><span>19:00 上课</span><span>19:45 下课</span></div>
+        </div>
+      </section>
+
+      <section class="section report-card" aria-labelledby="work-title">
+        <div class="section-heading">
+          <h2 id="work-title">课堂作品</h2>
+        </div>
+        <div class="panel game-panel">
+          <div class="game-topline">
+            <div><h3>田忌赛马</h3><p>策略编程游戏 · 方向键选择出赛顺序</p></div>
+            <span class="game-live-label"><i></i>可互动</span>
+          </div>
+          <div class="game-board" id="tianji-game" tabindex="0" aria-label="田忌赛马互动游戏。使用方向键选择马匹，空格键确认。">
+            <div class="game-cover" id="game-cover">
+              <div class="cover-sun" aria-hidden="true"></div>
+              <div class="cover-cloud cover-cloud-one" aria-hidden="true"></div>
+              <div class="cover-cloud cover-cloud-two" aria-hidden="true"></div>
+              <div class="cover-title"><span>策略对决</span><strong>田忌赛马</strong><small>想一想，怎样安排出赛顺序？</small></div>
+              <svg class="cover-horse" viewBox="0 0 120 92" role="img" aria-label="奔跑的马">
+                <path d="M13 60c4-10 14-17 28-20l12-19 18-4 12 9 15 3 8 11-10 8-8 1-5 18 8 15H79L68 66l-17 2-6 14H34l5-18-12-3-8 18H8l7-20-2 1Z" fill="currentColor"/>
+                <path d="m54 22 6-10 9 4 4 9M70 26l8-11 8 8" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+                <circle cx="91" cy="33" r="2.3" fill="#fff"/>
+                <path d="m28 42-8-10-5 15M57 65l-3 18M78 62l5 17" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+              </svg>
+              <button class="game-play-button" type="button" data-game-play><svg aria-hidden="true"><use href="#i-play"/></svg><span>开始比赛</span></button>
+            </div>
+            <div class="game-play" id="game-play" hidden>
+              <div class="game-scorebar">
+                <span class="round-count" id="round-count">第 1 / 3 局</span>
+                <span class="game-score"><b id="player-score">0</b><i>:</i><b id="opponent-score">0</b></span>
+              </div>
+              <div class="race-pair" id="race-pair">
+                <div class="race-side">
+                  <div class="race-name"><strong>小鹿</strong><span id="player-horse-name">待选马匹</span></div>
+                  <div class="race-rail"><span class="track-mark">起点</span><span class="finish-mark">终点</span><span class="runner" id="player-runner" aria-hidden="true"></span></div>
+                </div>
+                <div class="race-side rival">
+                  <div class="race-name"><strong>齐王</strong><span id="opponent-horse-name">上等马</span></div>
+                  <div class="race-rail"><span class="track-mark">起点</span><span class="finish-mark">终点</span><span class="runner" id="opponent-runner" aria-hidden="true"></span></div>
+                </div>
+              </div>
+              <p class="race-message" id="race-message" aria-live="polite">选择一匹马，安排本局出赛。</p>
+              <div class="horse-choices" id="horse-choices" aria-label="选择出赛马匹"></div>
+              <button class="game-action" id="game-action" type="button" data-game-action>确认出赛</button>
+            </div>
+          </div>
+          <div class="game-controls">
+            <button class="text-button" type="button" data-game-refresh><svg><use href="#i-refresh"/></svg>刷新作品</button>
+            <button class="text-button" type="button" data-keyboard-toggle aria-expanded="false" aria-controls="virtual-keyboard"><svg><use href="#i-keyboard"/></svg><span>展开键盘</span><span class="keyboard-chevron" aria-hidden="true">⌄</span></button>
+          </div>
+          <div class="virtual-keyboard" id="virtual-keyboard" hidden>
+            <div class="direction-pad" aria-label="方向键">
+              <span class="key-spacer" aria-hidden="true"></span>
+              <button type="button" data-game-key="up" aria-label="上">↑</button>
+              <span class="key-spacer" aria-hidden="true"></span>
+              <button type="button" data-game-key="left" aria-label="左">←</button>
+              <span class="key-center" aria-hidden="true">方向</span>
+              <button type="button" data-game-key="right" aria-label="右">→</button>
+              <span class="key-spacer" aria-hidden="true"></span>
+              <button type="button" data-game-key="down" aria-label="下">↓</button>
+              <span class="key-spacer" aria-hidden="true"></span>
+            </div>
+            <button class="space-key" type="button" data-game-key="space"><span>空格</span><small>确认 / 开始</small></button>
+          </div>
+          <p class="game-caption">方向键选择出赛马匹，空格键确认；也可以展开下方键盘操作。</p>
+        </div>
+      </section>
+
+      <section class="section report-card" aria-labelledby="knowledge-title">
+        <div class="section-heading">
+          <h2 id="knowledge-title">知识收获</h2>
+        </div>
+        <div class="panel">
+          <div class="section-context">本节学习关键词</div>
+          <div class="word-cloud" aria-label="本节知识点词云">
+            <span class="word small" style="--tone:#087565">角度与旋转</span>
+            <span class="word small" style="--tone:#3476b8">坐标变化</span>
+            <span class="word small" style="--tone:#ae5343">轨迹设计</span>
+            <span class="word" style="--size:17px;--tone:#2c6faf;--tint:#eaf3ff">角色移动</span>
+            <span class="word" style="--size:18px;--tone:#ae4f3f;--tint:#fff0eb">range</span>
+            <span class="word" style="--size:16px;--tone:#2c6faf;--tint:#edf5ff">试错优化</span>
+            <span class="word main-word">循环结构</span>
+            <span class="word" style="--size:17px;--tone:#087767;--tint:#e0f6ef">重复执行</span>
+            <span class="word" style="--size:19px;--tone:#087767;--tint:#e0f6ef">for循环</span>
+            <span class="word" style="--size:16px;--tone:#ae4f3f;--tint:#fff0eb">顺序结构</span>
+            <span class="word small" style="--tone:#3476b8">调试思路</span>
+            <span class="word small" style="--tone:#087565">程序执行</span>
+          </div>
+          <p class="knowledge-note">从一段段指令开始，搭建自己的小小宇宙。</p>
+        </div>
+      </section>
+
+      <section class="section report-card" aria-labelledby="ability-title">
+        <div class="section-heading">
+          <h2 id="ability-title">五维能力表现</h2>
+        </div>
+        <div class="panel">
+          <figure class="ability-model" aria-label="五维能力模型，满分100分">
+            <svg viewBox="0 0 430 342" aria-hidden="true" focusable="false">
+              <circle class="radar-outer" cx="215" cy="172" r="108"/>
+              <g class="radar-grid"><circle cx="215" cy="172" r="86.4"/><circle cx="215" cy="172" r="64.8"/><circle cx="215" cy="172" r="43.2"/><circle cx="215" cy="172" r="21.6"/></g>
+              <g class="radar-axis"><path d="M215 172V64"/><path d="M215 172 317.714 138.626"/><path d="M215 172 278.481 259.374"/><path d="M215 172 151.519 259.374"/><path d="M215 172 112.286 138.626"/></g>
+              <polygon class="radar-area" points="215,79.12 309.497,141.296 268.324,245.394 159.137,248.889 126.666,143.298"/>
+              <g class="radar-point"><circle cx="215" cy="79.12" r="3.5"/><circle cx="309.497" cy="141.296" r="3.5"/><circle cx="268.324" cy="245.394" r="3.5"/><circle cx="159.137" cy="248.889" r="3.5"/><circle cx="126.666" cy="143.298" r="3.5"/></g>
+            </svg>
+            <ul class="radar-labels">
+              <li class="radar-label interaction"><span>课堂互动</span><small>表现力<b>86</b></small></li>
+              <li class="radar-label hands-on"><span>动手实操</span><small>表现力<b>92</b></small></li>
+              <li class="radar-label knowledge"><span>编程知识</span><small>表现力<b>84</b></small></li>
+              <li class="radar-label logic"><span>逻辑思维</span><small>表现力<b>88</b></small></li>
+              <li class="radar-label ai"><span>AI认知</span><small>表现力<b>86</b></small></li>
+            </ul>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section report-card practice-card" aria-labelledby="practice-title">
+        <div class="section-heading"><h2 id="practice-title">答题详情</h2></div>
+        <div class="panel">
+          <div class="practice-counts" aria-label="课堂练习：正确9题，错误1题，未答0题">
+            <div class="practice-count"><div><b>9</b>道</div><span>正确题数</span></div>
+            <div class="practice-count"><div><b>1</b>道</div><span>错误题数</span></div>
+            <div class="practice-count"><div><b>0</b>道</div><span>未答题数</span></div>
+          </div>
+          <div class="answer-grid" id="answer-grid" aria-label="选择题号查看题目与解析"></div>
+          <div class="answer-legend" aria-label="答题状态图例"><span><i></i>正确</span><span><i class="wrong-dot"></i>错误</span><span><i class="empty-dot"></i>未作答</span></div>
+          <button class="view-answers" type="button" id="view-answers">查看详情<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+        </div>
+      </section>
+
+      <section class="section report-card" aria-labelledby="inspiration-title">
+        <div class="section-heading">
+          <h2 id="inspiration-title">优秀作品灵感</h2>
+        </div>
+        <div class="panel">
+          <video class="inspiration-video" controls playsinline preload="none" poster="./assets/software-s-fruit-poster.webp" aria-label="软S切水果编程作品的课堂实机录屏">
+            <source src="./assets/software-s-fruit.mp4" type="video/mp4">
+            您的浏览器暂不支持视频播放。
+          </video>
+          <p class="video-caption">软S课堂录屏 · 切水果实机运行画面</p>
+        </div>
+      </section>
+
+      <footer><p class="footer-slogan">AI在线编程教育引领者</p></footer>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog class="question-dialog" id="question-dialog" aria-labelledby="question-dialog-title">
+    <header class="question-topbar">
+      <button class="icon-button" type="button" aria-label="返回答题列表" title="返回答题列表" data-close-dialog="question-dialog"><svg><use href="#i-back"/></svg></button>
+      <h2 id="question-dialog-title">答题详情</h2>
+      <span aria-hidden="true"></span>
+    </header>
+    <div class="question-filter" role="tablist" aria-label="按答题结果筛选">
+      <button type="button" role="tab" id="filter-all" aria-selected="true" aria-controls="question-main">全部 <b id="count-all">10</b></button>
+      <button type="button" role="tab" id="filter-correct" aria-selected="false" aria-controls="question-main">正确 <b id="count-correct">9</b></button>
+      <button type="button" role="tab" id="filter-wrong" aria-selected="false" aria-controls="question-main">错误 <b id="count-wrong">1</b></button>
+    </div>
+    <div class="question-main" id="question-main">
+      <div class="question-meta"><span class="question-type">选择题</span><span class="question-progress" id="question-progress"></span></div>
+      <section class="exercise-card" aria-label="题目内容">
+        <div class="exercise-eyebrow" id="question-skill"></div>
+        <h3 class="question-stem" id="question-stem"></h3>
+        <div class="q-options" id="question-options"></div>
+      </section>
+      <section class="answer-section" aria-labelledby="answer-title">
+        <h3 class="answer-heading" id="answer-title">答案</h3>
+        <div class="answer-result" id="answer-result"></div>
+        <div class="explanation"><strong>题目解析</strong><span id="question-explanation"></span></div>
+      </section>
+    </div>
+    <div class="question-nav">
+      <button class="action-button" type="button" id="previous-question">上一题</button>
+      <button class="action-button primary" type="button" id="next-question">下一题</button>
+    </div>
+  </dialog>
+
+  <script src="./assets/tianji-race.js?v=20261110"></script>
+  <script>
+    const toast = document.getElementById("toast");
+    let toastTimer;
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2400);
+    }
+
+    document.querySelectorAll("[data-toast]").forEach((button) => {
+      button.addEventListener("click", () => showToast(button.dataset.toast));
+    });
+
+    document.querySelectorAll("[data-close-dialog]").forEach((button) => {
+      button.addEventListener("click", () => document.getElementById(button.dataset.closeDialog).close());
+    });
+    const practiceQuestions = [
+      { title: "怎样让角色连续向前移动 6 次？", skill: "循环结构", options: ["重复 6 次：等待 1 秒", "重复 6 次：移动 10 步", "等待 6 秒：移动 1 步"], correct: 1, answer: 1, explanation: "把“移动 10 步”放进“重复执行 6 次”的循环中，角色就会连续移动 6 次。循环能帮我们简洁地完成重复动作。" },
+      { title: "让图案重复旋转，应该使用什么结构？", skill: "重复执行", options: ["只运行一次移动指令", "用循环包住移动与旋转指令", "删除旋转指令"], correct: 1, answer: 1, explanation: "循环结构可以重复执行一组指令。改变循环次数或旋转角度，还能创作出不同图案。" },
+      { title: "在 Python 中，哪条语句可以重复执行 4 次？", skill: "for循环", options: ["for i in range(4):", "for i in range(1):", "print(4)"], correct: 0, answer: 0, explanation: "range(4) 会依次产生 0、1、2、3，共 4 个数，因此 for 循环中的指令会执行 4 次。" },
+      { title: "角色从 x=10 向右移动 20，新的横坐标是多少？", skill: "坐标变化", options: ["10", "20", "30"], correct: 2, answer: 2, explanation: "向右移动会增加横坐标，所以新的横坐标是 10 + 20 = 30。" },
+      { title: "画正方形时，每画完一条边应该转多少度？", skill: "角度与旋转", options: ["45 度", "90 度", "180 度"], correct: 1, answer: 1, explanation: "正方形有 4 条边，沿着四条边走一圈需要转过 360 度。每次转弯的角度是 360 ÷ 4 = 90 度。" },
+      { title: "range(3) 会产生哪一组数字？", skill: "range", options: ["1、2、3", "0、1、2", "0、1、2、3"], correct: 1, answer: 0, explanation: "range(3) 默认从 0 开始，在 3 之前停止，所以依次产生 0、1、2。记住：它不包含结束值 3。" },
+      { title: "程序没有画出想要的轨迹，怎样调试更合适？", skill: "调试思路", options: ["每次调整一个参数，再运行观察", "同时修改所有指令", "直接删掉所有代码"], correct: 0, answer: 0, explanation: "每次只调整一个参数，再运行并观察结果，能帮助我们找出哪一个变化影响了轨迹。" },
+      { title: "让星球沿同一条轨道一直运行，哪种方式更合适？", skill: "程序执行", options: ["只移动一次", "先停止程序", "把轨道运动放进持续执行的循环"], correct: 2, answer: 2, explanation: "持续执行的循环会不断重复轨道运动，让星球沿着轨道运行。" },
+      { title: "程序里的两条普通指令通常按照什么顺序执行？", skill: "顺序结构", options: ["从下到上", "从上到下", "随机执行"], correct: 1, answer: 1, explanation: "顺序结构中的指令通常从上到下依次执行。先后顺序不同，作品呈现的效果也可能不同。" },
+      { title: "重复移动后，角色超出了舞台，优先尝试怎样调整？", skill: "轨迹设计", options: ["减小移动步长或循环次数", "继续增加移动步长", "删掉所有循环"], correct: 0, answer: 0, explanation: "先减小单次移动步长或循环次数，可以缩短总移动距离，让角色留在舞台范围内。" }
+    ];
+    let currentQuestion = 0;
+    let activeQuestionFilter = "all";
+    const questionDialog = document.getElementById("question-dialog");
+    const answerGrid = document.getElementById("answer-grid");
+    const questionMain = document.getElementById("question-main");
+    const previousQuestion = document.getElementById("previous-question");
+    const nextQuestion = document.getElementById("next-question");
+    const questionFilters = [
+      { key: "all", button: document.getElementById("filter-all"), count: document.getElementById("count-all") },
+      { key: "correct", button: document.getElementById("filter-correct"), count: document.getElementById("count-correct") },
+      { key: "wrong", button: document.getElementById("filter-wrong"), count: document.getElementById("count-wrong") }
+    ];
+    const isCorrectQuestion = question => question.answer === question.correct;
+    questionFilters.forEach(({key, button, count}, index) => {
+      const total = key === "all" ? practiceQuestions.length : practiceQuestions.filter(question => isCorrectQuestion(question) === (key === "correct")).length;
+      count.textContent = String(total);
+      button.addEventListener("click", () => selectQuestionFilter(key));
+      button.addEventListener("keydown", event => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        const targetIndex = event.key === "Home" ? 0 : event.key === "End" ? questionFilters.length - 1 : (index + (event.key === "ArrowRight" ? 1 : -1) + questionFilters.length) % questionFilters.length;
+        questionFilters[targetIndex].button.focus();
+        questionFilters[targetIndex].button.click();
+      });
+    });
+    function visibleQuestionIndexes() {
+      return practiceQuestions.reduce((indexes, question, index) => {
+        const matches = activeQuestionFilter === "all"
+          || (activeQuestionFilter === "correct" && isCorrectQuestion(question))
+          || (activeQuestionFilter === "wrong" && !isCorrectQuestion(question));
+        if (matches) indexes.push(index);
+        return indexes;
+      }, []);
+    }
+    function selectQuestionFilter(filter) {
+      activeQuestionFilter = filter;
+      questionFilters.forEach(({key, button}) => button.setAttribute("aria-selected", String(key === filter)));
+      const visible = visibleQuestionIndexes();
+      renderQuestion(visible.includes(currentQuestion) ? currentQuestion : visible[0]);
+    }
+    function renderQuestion(index) {
+      const visible = visibleQuestionIndexes();
+      if (!visible.includes(index)) index = visible[0];
+      currentQuestion = index;
+      const question = practiceQuestions[index];
+      const isCorrect = isCorrectQuestion(question);
+      const position = visible.indexOf(index);
+      document.getElementById("question-progress").textContent = `第 ${position + 1} / ${visible.length} 题`;
+      document.getElementById("question-skill").textContent = `课堂练习 · ${question.skill}`;
+      document.getElementById("question-stem").textContent = question.title;
+      const options = document.getElementById("question-options");
+      options.replaceChildren();
+      question.options.forEach((option, optionIndex) => {
+        const row = document.createElement("div");
+        row.className = "q-option";
+        row.textContent = `${String.fromCharCode(65 + optionIndex)}. ${option}`;
+        if (optionIndex === question.correct) row.classList.add("correct");
+        if (optionIndex === question.answer && !isCorrect) row.classList.add("incorrect");
+        if (optionIndex === question.correct || optionIndex === question.answer) {
+          const label = document.createElement("span");
+          label.className = "q-option-tag";
+          label.textContent = optionIndex === question.correct ? (isCorrect ? "✓ 你的答案 · 正确" : "✓ 正确答案") : "你的答案";
+          row.append(label);
+        }
+        options.append(row);
+      });
+      const answerResult = document.getElementById("answer-result");
+      const userAnswer = `${String.fromCharCode(65 + question.answer)}. ${question.options[question.answer]}`;
+      const correctAnswer = `${String.fromCharCode(65 + question.correct)}. ${question.options[question.correct]}`;
+      answerResult.textContent = isCorrect ? `你的答案：${userAnswer}（正确）` : `你的答案：${userAnswer}；正确答案：${correctAnswer}`;
+      document.getElementById("question-explanation").textContent = question.explanation;
+      previousQuestion.disabled = position === 0;
+      nextQuestion.disabled = position === visible.length - 1;
+      questionMain.scrollTop = 0;
+    }
+    function openQuestion(index) {
+      activeQuestionFilter = "all";
+      questionFilters.forEach(({key, button}) => button.setAttribute("aria-selected", String(key === "all")));
+      renderQuestion(index);
+      questionDialog.showModal();
+    }
+    practiceQuestions.forEach((question, index) => {
+      const correct = isCorrectQuestion(question);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `answer-number${correct ? "" : " wrong"}`;
+      button.setAttribute("aria-label", `第${index + 1}题，${correct ? "已答对" : "答错"}，查看题目解析`);
+      button.dataset.question = String(index);
+      button.textContent = String(index + 1);
+      const indicator = document.createElement("span");
+      indicator.className = "answer-indicator";
+      indicator.setAttribute("aria-hidden", "true");
+      indicator.textContent = correct ? "✓" : "!";
+      button.append(indicator);
+      button.addEventListener("click", () => openQuestion(index));
+      answerGrid.append(button);
+    });
+    document.getElementById("view-answers").addEventListener("click", () => openQuestion(0));
+    previousQuestion.addEventListener("click", () => {
+      const visible = visibleQuestionIndexes();
+      const position = visible.indexOf(currentQuestion);
+      if (position > 0) renderQuestion(visible[position - 1]);
+    });
+    nextQuestion.addEventListener("click", () => {
+      const visible = visibleQuestionIndexes();
+      const position = visible.indexOf(currentQuestion);
+      if (position < visible.length - 1) renderQuestion(visible[position + 1]);
+    });
+  </script>
+</body>
+</html>
